@@ -8,7 +8,8 @@ API REST desarrollada con Django REST Framework y PostgreSQL para la gestión de
 ### 1. Clonar el repositorio
 
 git clone https://github.com/dylan18x/fernandez-control-biblioteca-backend.git
-cd 
+
+cd fernandez-biblioteca-api
 
 ### 2. Activar entorno virtual
 
