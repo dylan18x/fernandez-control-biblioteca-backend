@@ -50,7 +50,7 @@ jobs:
           DB_HOST:       localhost
           DB_PORT:       5432
           CORS_ALLOW_ALL_ORIGINS: True
-        run: uv run python manage.py test biblioteca --verbosity=2
+        run: uv run python manage.py test --verbosity=2
 
   deploy:
     name: Deploy to VPS
