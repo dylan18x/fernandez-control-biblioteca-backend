@@ -81,6 +81,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'biblioteca.pagination.StandardPagination',
     'PAGE_SIZE': 10,
+    'EXCEPTION_HANDLER': 'biblioteca.error_handlers.custom_exception_handler',
 }
 
 SIMPLE_JWT = {
