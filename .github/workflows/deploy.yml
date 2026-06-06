@@ -75,26 +75,22 @@ jobs:
           VPS_USER:    ${{ secrets.VPS_USERNAME }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          ssh $VPS_USER@$VPS_HOST << 'ENDSSH'
+          ssh $VPS_USER@$VPS_HOST << ENDSSH
             set -e
+            echo "DEPLOY_PATH es: $DEPLOY_PATH"
             echo "── 1. Actualizando código ──"
             cd $DEPLOY_PATH
             git fetch origin
             git reset --hard origin/main
-
             echo "── 2. Instalando dependencias ──"
             uv sync --frozen
-
             echo "── 3. Aplicando migraciones ──"
             uv run python manage.py migrate --noinput
-
             echo "── 4. Recolectando estáticos ──"
             uv run python manage.py collectstatic --noinput --clear
-
             echo "── 5. Reiniciando servicios ──"
             systemctl restart gunicorn-biblioteca
             systemctl restart nginx
-
             echo "── 6. Verificando salud ──"
             sleep 3
             curl -sf http://127.0.0.1/api/health/ && echo "API OK" || echo "API ERROR"
