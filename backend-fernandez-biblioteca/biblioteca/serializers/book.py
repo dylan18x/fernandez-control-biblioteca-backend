@@ -13,7 +13,7 @@ class BookSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 
     def validate_name(self, value):
-        qs = Book.objects.filter(name__iexact=value)
+        qs = Book.objects.filter(title__iexact=value)
         if self.instance:
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
