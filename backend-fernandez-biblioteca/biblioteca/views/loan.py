@@ -12,7 +12,6 @@ from biblioteca.pagination           import StandardPagination
 
 
 class LoanViewSet(viewsets.ModelViewSet):
-    queryset           = Loan.objects.select_related('reader').all()
     serializer_class   = LoanSerializer
     permission_classes = [IsStaffOrReadOnly]
     pagination_class   = StandardPagination
@@ -22,16 +21,18 @@ class LoanViewSet(viewsets.ModelViewSet):
     ordering_fields    = ['loan_date', 'return_date', 'status']
     ordering           = ['-loan_date']
 
+    def get_queryset(self):
+        user = self.request.user
+        
+        if not user.is_authenticated:
+            return Loan.objects.none()
+            
+        if user.is_staff:
+            return Loan.objects.select_related('reader').all()
+            
+        return Loan.objects.select_related('reader').filter(reader__user=user)
+
     @action(detail=False, methods=['get'], url_path='stats')
     def stats(self, request):
         qs = self.get_queryset()
         total = qs.count()
-        active   = qs.filter(status='active').count()
-        returned = qs.filter(status='returned').count()
-        overdue  = qs.filter(status='overdue').count()
-        return Response({
-            'total':    total,
-            'active':   active,
-            'returned': returned,
-            'overdue':  overdue,
-        })

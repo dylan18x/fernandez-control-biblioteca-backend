@@ -8,9 +8,7 @@ from biblioteca.permissions              import IsStaffOrReadOnly
 from biblioteca.filters                  import LoanDetailFilter
 from biblioteca.pagination               import StandardPagination
 
-
 class LoanDetailViewSet(viewsets.ModelViewSet):
-    queryset           = LoanDetail.objects.select_related('loan', 'book').all()
     serializer_class   = LoanDetailSerializer
     permission_classes = [IsStaffOrReadOnly]
     pagination_class   = StandardPagination
@@ -19,3 +17,14 @@ class LoanDetailViewSet(viewsets.ModelViewSet):
     search_fields      = ['book__name', 'observation']
     ordering_fields    = ['delivery_date']
     ordering           = ['id']
+
+    def get_queryset(self):
+        user = self.request.user
+        
+        if not user.is_authenticated:
+            return LoanDetail.objects.none()
+            
+        if user.is_staff:
+            return LoanDetail.objects.select_related('loan', 'book').all()
+            
+        return LoanDetail.objects.select_related('loan', 'book').filter(loan__reader__user=user)
