@@ -19,9 +19,9 @@ class BookViewSet(viewsets.ModelViewSet):
     pagination_class   = StandardPagination
     filter_backends    = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class    = BookFilter
-    search_fields      = ['name', 'title','editorial']
-    ordering_fields    = ['name','year_publication','created_at']
-    ordering           = ['name']
+    search_fields      = ['title','editorial']
+    ordering_fields    = ['title','year_publication','created_at']
+    ordering           = ['title']
 
     @action(detail=False, methods=['get'], url_path='stats')
     def stats(self, request):
